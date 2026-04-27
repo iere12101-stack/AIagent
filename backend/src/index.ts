@@ -57,6 +57,25 @@ if (nodeMajor !== 22) {
 const app = express()
 app.use(express.json({ limit: '2mb' }))
 
+app.get('/', (_request, response) => {
+  response.status(200).json({
+    ok: true,
+    service: 'iere-whatsapp-backend',
+    buildId: BUILD_ID,
+    pipelineVersion: PIPELINE_VERSION,
+  })
+})
+
+app.get('/healthz', (_request, response) => {
+  response.status(200).json({
+    ok: true,
+    service: 'iere-whatsapp-backend',
+    buildId: BUILD_ID,
+    pipelineVersion: PIPELINE_VERSION,
+    uptime: Math.round(process.uptime()),
+  })
+})
+
 app.use('/api/v1/health', healthRouter)
 
 app.get('/api/v1/setup/status', (_request, response) => {
