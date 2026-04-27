@@ -1,0 +1,27 @@
+{
+  "name": "wa-chatbot-iere",
+  "version": "4.0.0",
+  "private": true,
+  "packageManager": "npm@10.9.7",
+  "engines": {
+    "node": ">=22 <23",
+    "npm": ">=10"
+  },
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "node scripts/dev-all.mjs",
+    "dev:frontend": "npm --workspace frontend run dev",
+    "dev:backend": "npm --workspace backend run dev",
+    "build": "npm --workspace frontend run build && npm --workspace backend run build",
+    "start": "npm --workspace frontend run start",
+    "lint": "npm --workspace frontend run lint",
+    "typecheck": "npm --workspace frontend run typecheck && npm --workspace backend run typecheck",
+    "import:properties": "npm --workspace frontend run import:properties"
+  },
+  "dependencies": {
+    "pg": "^8.20.0"
+  }
+}
