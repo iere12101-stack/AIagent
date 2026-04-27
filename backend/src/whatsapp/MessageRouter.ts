@@ -2,7 +2,14 @@ import type { WAMessage } from '@whiskeysockets/baileys'
 import { env } from '../config/env.js'
 import { BUILD_ID, PIPELINE_VERSION, buildRuntimeFingerprint } from '../config/runtimeFingerprint.js'
 import { getSupabaseAdmin, isSupabaseConfigured } from '../config/supabase.js'
-import { acquireLock, isAlreadyProcessed, markProcessed } from '../lib/messageDedup.js'
+import {
+  acquireLock,
+  buildMessageFingerprint,
+  isAlreadyProcessed,
+  isRecentDuplicateFingerprint,
+  markFingerprintProcessed,
+  markProcessed,
+} from '../lib/messageDedup.js'
 import { generateReply, sanitize, type ReplyResult } from '../modules/ai/aiService.js'
 import { detectPrimaryIntent, extractPropertyDetails } from '../modules/ai/intentDetector.js'
 import { buildSpecificCompanyResponse, getCompanyInfoAsString } from '../modules/ai/handlers/companyHandler.js'
@@ -30,14 +37,22 @@ export class MessageRouter {
     const text = this.extractText(message)
     if (!text.trim()) return
 
+    const jid = message.key.remoteJid ?? ''
+    const phone = jid.replace('@s.whatsapp.net', '').replace('@g.us', '')
+    const fingerprint = buildMessageFingerprint(phone, text)
+
     if (isAlreadyProcessed(messageId)) {
       console.log(`[DEDUP] Skipped duplicate msgId: ${messageId}`)
       return
     }
-    markProcessed(messageId)
 
-    const jid = message.key.remoteJid ?? ''
-    const phone = jid.replace('@s.whatsapp.net', '').replace('@g.us', '')
+    if (isRecentDuplicateFingerprint(fingerprint)) {
+      console.log(`[DEDUP] Skipped duplicate fingerprint: ${fingerprint}`)
+      return
+    }
+
+    markProcessed(messageId)
+    markFingerprintProcessed(fingerprint)
     const releaseLock = await acquireLock(phone)
 
     this.handleIncoming(message, text, jid, phone, deviceId, orgId)
