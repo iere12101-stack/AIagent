@@ -1,4 +1,6 @@
-# WA AI Chatbot SaaS v4 - IERE Edition
+# AIagent
+
+## WA AI Chatbot SaaS v4 - IERE Edition
 
 This repository contains the IERE WhatsApp AI Chatbot monorepo with the Next.js frontend under `frontend/` and the Baileys/Express backend under `backend/`.
 
@@ -15,7 +17,6 @@ This repository contains the IERE WhatsApp AI Chatbot monorepo with the Next.js 
 - `frontend/src/components/`: UI components and page-level views
 - `backend/src/`: Express API, WhatsApp runtime, AI, queues, flows, handoff
 - `supabase/migrations/`: schema, indexes, RLS, seed data, SQL helper functions
-- ''
 
 ## Setup
 
@@ -40,8 +41,7 @@ This repository contains the IERE WhatsApp AI Chatbot monorepo with the Next.js 
 - Frontend typecheck: `cd frontend && npm run typecheck`
 - Frontend lint: `cd frontend && npm run lint`
 - Backend typecheck: `cd backend && npm run typecheck`
-- Backend lint: 'cd backend && npm run lint'
-
+- Backend lint: `cd backend && npm run lint`
 
 ## Runtime Notes
 
